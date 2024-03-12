@@ -1,0 +1,52 @@
+// Place your key bindings in this file to override the defaults
+[
+    {
+        "key": "cmd+'",
+        "command": "workbench.action.debug.run",
+    },
+    {
+        "key": "cmd+l",
+        "command": "workbench.action.terminal.focus",
+    },
+    {
+        "key": "cmd+l",
+        "command": "workbench.action.focusActiveEditorGroup",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "shift+cmd+n",
+        "command": "workbench.files.action.createFileFromExplorer"
+    },
+    {
+        "key": "cmd+enter",
+        "command": "workbench.action.terminal.newInActiveWorkspace"
+    },
+    {
+        "key": "cmd+backspace",
+        "command": "workbench.action.terminal.killActiveTab",
+        "when": "terminalHasBeenCreated && terminalTabsFocus || terminalIsOpen && terminalTabsFocus || terminalProcessSupported && terminalTabsFocus"
+    },
+    {
+        "key": "cmd+backspace",
+        "command": "-workbench.action.terminal.killActiveTab",
+        "when": "terminalHasBeenCreated && terminalTabsFocus || terminalIsOpen && terminalTabsFocus || terminalProcessSupported && terminalTabsFocus"
+    },
+    {
+        "key": "cmd+backspace",
+        "command": "-workbench.action.terminal.sendSequence",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "cmd+backspace",
+        "command": "-workbench.action.chat.remove",
+        "when": "inChat && !inChatInput"
+    },
+    {
+        "key": "shift+cmd+backspace",
+        "command": "workbench.action.terminal.kill"
+    },
+    {
+        "key": "shift+cmd+n",
+        "command": "-workbench.action.newWindow"
+    }
+]
