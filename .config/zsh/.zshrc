@@ -20,9 +20,7 @@ export EDITOR='nvim'
 
 export OPENSSL_ROOT_DIR=/usr/local/opt/openssl@3
 
-ZSH_THEME="powerlevel10k/powerlevel10k"
-# enable command auto-correction.
-ENABLE_CORRECTION="true"
+ZSH_THEME="af-magic"
 
 plugins=(
   git
@@ -31,8 +29,6 @@ plugins=(
 )
 
 source $ZSH/oh-my-zsh.sh
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.config/p10k/config.zsh ]] || source ~/.config/p10k/config.zsh
 
 # For a full list of active aliases, run `alias`.
 # alias ohmyzsh="mate ~/.oh-my-zsh"
@@ -41,3 +37,6 @@ alias resource="source ~/.zshrc"
 # alias cat='bat'
 alias vim='nvim'
 alias cc='clear'
+alias squirro-shuttle="/Users/maxa/dev/squirro-bastion/squirro-shuttle/squirro-shuttle.sh"
+
+. /opt/homebrew/opt/asdf/libexec/asdf.sh
