@@ -12,8 +12,6 @@ export OPENSSL_ROOT_DIR=/usr/local/opt/openssl@3
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
-source $ZSH/oh-my-zsh.sh
-
 ZSH_THEME="af-magic"
 
 plugins=(
@@ -21,6 +19,7 @@ plugins=(
   zsh-syntax-highlighting
   zsh-autosuggestions
 )
+source $ZSH/oh-my-zsh.sh
 
 # For a full list of active aliases, run `alias`.
 # alias ohmyzsh="mate ~/.oh-my-zsh"
