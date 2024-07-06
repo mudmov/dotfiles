@@ -13,6 +13,6 @@ end
 myWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
 
 hs.hotkey.bind({"ctrl"}, "Return", function()
-  hs.application.launchOrFocus("Kitty")
+  hs.application.launchOrFocus("iTerm")
 end)
 
