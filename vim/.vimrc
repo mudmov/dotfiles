@@ -1,15 +1,26 @@
 set fileformat=unix
 set encoding=UTF-8
 
+set nocompatible
+
 " Remap escape key
 inoremap jk <ESC>
-let mapleader = "'"
+let mapleader = " "
+
+" Always center half page jumps
+nnoremap <C-u> <C-u>zz
+nnoremap <C-d> <C-d>zz
+
+" Set autoreload when file is changed
+set autoread
+au CursorHold * checktime
 
 " Syntax highlighting
 syntax on
 
-" Relative line numbers
-set relativenumber
+" Relative line numbers when in normal mode
+autocmd InsertEnter * :set norelativenumber
+autocmd InsertLeave * :set relativenumber
 set rnu
 
 " Line cursor changing from cursor to block
