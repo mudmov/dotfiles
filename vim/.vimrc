@@ -11,6 +11,10 @@ let mapleader = " "
 nnoremap <C-u> <C-u>zz
 nnoremap <C-d> <C-d>zz
 
+" Always center vertical navigation
+nnoremap n nzzzv
+nnoremap N Nzzzv
+
 " Set autoreload when file is changed
 set autoread
 au CursorHold * checktime
