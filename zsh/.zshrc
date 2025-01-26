@@ -30,7 +30,7 @@ alias zsource="source $HOME/.zshrc"
 alias tsource="tmux source-file $HOME/dotfiles/tmux/tmux.conf"
 # alias ls='eza --icons'
 # alias cat='bat'
-alias vim='nvim'
+#alias vim='nvim'
 alias cc='clear'
 # alias squirro-shuttle="/Users/maxa/dev/squirro-bastion/squirro-shuttle/squirro-shuttle.sh"
 
