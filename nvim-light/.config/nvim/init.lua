@@ -37,6 +37,7 @@ vim.opt.splitright = true
 vim.opt.splitbelow = true
 -- Colorscheme
 vim.cmd.colorscheme('habamax')
+vim.opt.termguicolors = true
 -- Hide mode
 vim.opt.showmode = false
 -- Show which line the cursor is on
