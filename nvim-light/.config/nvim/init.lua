@@ -47,7 +47,7 @@ vim.opt.signcolumn = 'yes'
 vim.opt.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = vim.api.nvim_win_get_height(0)/2
+vim.opt.scrolloff = math.floor(vim.api.nvim_win_get_height(0)/2)
 -- Search
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
