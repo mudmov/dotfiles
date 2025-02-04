@@ -12,6 +12,8 @@ export EDITOR='nvim'
 alias nf='nvim $(fzf -m --preview="cat {}")'
 alias zsource="source $HOME/.zshrc"
 alias cc='clear'
+alias svim='sudoedit'
+
 
 # Ghostty issues when connecting to remote
 if [[ "$TERM_PROGRAM" == "ghostty" ]]; then
