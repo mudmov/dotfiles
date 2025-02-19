@@ -15,6 +15,8 @@ vim.keymap.set('v', 'd', '"_d')
 -- Center after half page jump 
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
+-- Don't lose register when pasting in visual mode
+vim.keymap.set('x', 'p', 'pgvy', { noremap = true })
 
 
 -- [[ Settings ]]
