@@ -6,7 +6,7 @@ clean:
 
 # Configuration variables
 DOTFILES_DIR := $(shell pwd)  # Current directory (assuming we're in the dotfiles repo)
-NVIM_CONFIG_PACKAGE := nvim  # The directory name in your dotfiles repo for nvim config
+NVIM_CONFIG_PACKAGE := nvim-light  # The directory name in your dotfiles repo for nvim config
 NVIM_BUILD_DIR := $(HOME)/nvim-build
 
 # Common dependencies across all package managers
