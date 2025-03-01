@@ -6,7 +6,7 @@ clean:
 
 # Configuration variables
 DOTFILES_DIR := $(shell pwd)  # Current directory (assuming we're in the dotfiles repo)
-NVIM_CONFIG_PACKAGE := nvim-light  # The directory name in your dotfiles repo for nvim config
+NVIM_CONFIG_PACKAGE := nvim  # The directory name in your dotfiles repo for nvim config
 NVIM_BUILD_DIR := $(HOME)/nvim-build
 
 # Common dependencies across all package managers
@@ -24,12 +24,21 @@ endif
 # Combine common and specific dependencies
 NVIM_DEPS := $(COMMON_DEPS) $(SPECIFIC_DEPS)
 
+# Detect if running as root
+ifeq ($(shell id -u),0)
+  # Running as root, don't use sudo
+  SUDO :=
+else
+  # Not running as root, use sudo
+  SUDO := sudo
+endif
+
 # Detect package manager and set install command
 ifneq ($(shell command -v apt-get 2> /dev/null),)
-  PKG_INSTALL := sudo apt-get update && sudo apt-get install -y
+  PKG_INSTALL := $(SUDO) apt-get update && $(SUDO) apt-get install -y
   PKG_MANAGER := apt
 else ifneq ($(shell command -v dnf 2> /dev/null),)
-  PKG_INSTALL := sudo dnf install -y
+  PKG_INSTALL := $(SUDO) dnf install -y
   PKG_MANAGER := dnf
 else ifneq ($(shell command -v brew 2> /dev/null),)
   PKG_INSTALL := brew install
@@ -84,7 +93,7 @@ install-nvim: install-nvim-deps
 	fi
 	cd $(NVIM_BUILD_DIR)/neovim && \
 	make CMAKE_BUILD_TYPE=Release && \
-	sudo make install
+	$(SUDO) make install
 	@echo "Neovim built and installed successfully!"
 	nvim --version
 
