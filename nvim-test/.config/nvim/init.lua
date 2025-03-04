@@ -73,6 +73,9 @@ for _, mode in ipairs({'n', 'i'}) do
   vim.keymap.set(mode, '<C-j>', '<Esc>:m .+1<CR>==', { noremap = true, silent = true })
   vim.keymap.set(mode, '<C-k>', '<Esc>:m .-2<CR>==', { noremap = true, silent = true })
 end
+-- Move selected lines up or down in visual mode
+vim.keymap.set('v', '<C-j>', ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
+vim.keymap.set('v', '<C-k>', ":m '<-2<CR>gv=gv", { noremap = true, silent = true })
 
 
 -- [[ Terminal ]]
