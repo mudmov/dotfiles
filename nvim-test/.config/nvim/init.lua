@@ -48,9 +48,19 @@ vim.opt.cursorline = true
 vim.opt.signcolumn = 'yes'
 -- Show trails and whitespaces
 vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = math.floor(vim.api.nvim_win_get_height(0)/2)
+vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+-- Set initial scrolloff value
+local function update_scrolloff()
+  vim.opt.scrolloff = math.floor(vim.api.nvim_win_get_height(0)/2)
+end
+update_scrolloff()
+-- Update scrolloff when window size changes
+vim.api.nvim_create_autocmd({'VimResized'}, {
+  callback = update_scrolloff,
+  desc = 'Update scrolloff when window is resized'
+})
+
 -- Search
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
