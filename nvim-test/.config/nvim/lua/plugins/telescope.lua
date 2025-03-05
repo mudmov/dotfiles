@@ -8,7 +8,7 @@ return {
   },
   cmd = 'Telescope',
   keys = {
-    { '<leader>ff', '<cmd>Telescope find_files<cr>', desc = 'Find Files' },
+    { '<leader>ff', '<cmd>Telescope find_files hidden=true<cr>', desc = 'Find Files' },
     { '<leader>fg', '<cmd>Telescope live_grep<cr>', desc = 'Live Grep' },
     { '<leader>fo', '<cmd>Telescope oldfiles<cr>', desc = 'Recently Closed Files' },
     { '<leader>fs', '<cmd>Telescope grep_string<cr>', desc = 'Grep String under Cursor' },
