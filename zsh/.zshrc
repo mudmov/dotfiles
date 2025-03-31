@@ -74,3 +74,12 @@ fd() {
         cd "$target_dir"
     fi
 }
+
+# terminal reset wrapper for SSH sessions
+ssh_with_cleanup() {
+    \ssh "$@"
+    # Complete terminal reset after SSH exits (handles any Neovim issues inside SSH)
+    printf '\e[?1000l\e[?1002l\e[?1006l\e]8;;\a\ec'
+}
+alias ssh=ssh_with_cleanup
+
