@@ -60,6 +60,9 @@ vim.api.nvim_create_autocmd({'VimResized'}, {
   callback = update_scrolloff,
   desc = 'Update scrolloff when window is resized'
 })
+-- Disable Neotree
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
 -- Search
 vim.opt.ignorecase = true
@@ -102,11 +105,4 @@ vim.keymap.set('t', 'jk', '<C-\\><C-n> :hide<CR>')  -- Exit terminal mode
 
 
 -- [[ Plugins ]]
--- Lazy plugin manager
 require("config.lazy")
---- Telescope - find and open files, grep within files
---- Harpoon - navigate open files faster
---- LSP
---- Comment out lines with simple command
---- Autocompletion
---- Formatting
