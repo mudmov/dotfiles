@@ -20,6 +20,7 @@ return {
           "grammarly",
           "nginx_language_server",
           "ruff",
+          "pyright",
           "sqlls",
           "ltex",
           "yamlls"
@@ -44,6 +45,7 @@ return {
       lspconfig.sqlls.setup({})
       lspconfig.ltex.setup({})
       lspconfig.yamlls.setup({})
+      lspconfig.pyright.setup({})
 
       vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
       vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
