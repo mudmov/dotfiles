@@ -29,9 +29,36 @@ return {
   },
   {
     "neovim/nvim-lspconfig",
+    dependencies = {
+      {
+        "folke/lazydev.nvim",
+        opts = {
+          library = {
+            { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+          },
+        },
+      }, 
+    },
     config = function()
+      local capabilities = require('blink.cmp').get_lsp_capabilities()
       local lspconfig = require("lspconfig")
-      lspconfig.lua_ls.setup({})
+      lspconfig.lua_ls.setup({
+        capabilities = capabilities,
+        settings = {
+          Lua = {
+            runtime = {
+              version = 'LuaJIT',
+            },
+            diagnostics = {
+              globals = {'vim', 'require'}  -- Tell the language server that 'vim' is a global
+            },
+            workspace = {
+              -- Make the server aware of Neovim runtime files
+              library = vim.api.nvim_get_runtime_file("", true)
+            }
+          }
+        }
+      })
       lspconfig.ansiblels.setup({})
       lspconfig.bashls.setup({})
       lspconfig.dockerls.setup({})
@@ -61,3 +88,5 @@ return {
     end
   },
 }
+
+
