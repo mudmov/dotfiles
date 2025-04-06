@@ -17,6 +17,11 @@ vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
 -- Don't lose register when pasting in visual mode
 vim.keymap.set('x', 'p', 'pgvy', { noremap = true })
+-- Window navigation
+vim.keymap.set('n', '<c-h>', ':wincmd h<CR>')
+vim.keymap.set('n', '<c-j>', ':wincmd j<CR>')
+vim.keymap.set('n', '<c-k>', ':wincmd k<CR>')
+vim.keymap.set('n', '<c-l>', ':wincmd l<CR>')
 
 
 -- [[ Settings ]]
