@@ -10,8 +10,8 @@ vim.keymap.set('i', 'jk', '<Esc>')
 vim.keymap.set('i', 'JK', '<Esc>')
 vim.keymap.set('v', 'jk', '<Esc>')
 -- Delete without yanking
-vim.keymap.set('n', 'd', '"_d')
-vim.keymap.set('v', 'd', '"_d')
+vim.keymap.set('n', 'x', '"_x')
+vim.keymap.set('v', 'x', '"_x')
 -- Center after half page jump 
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
