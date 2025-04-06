@@ -105,7 +105,7 @@ vim.api.nvim_create_autocmd('TermOpen', {
 })
 -- Terminal mappings
 -- vim.o.shell = 'sh' -- uncomment if bash/zsh is too slow
-vim.keymap.set('n', '<leader>t', ':sp | terminal<CR>i')  -- split above
+-- vim.keymap.set('n', '<leader>t', ':sp | terminal<CR>i')  -- split above
 vim.keymap.set('t', 'jk', '<C-\\><C-n> :hide<CR>')  -- Exit terminal mode
 
 
