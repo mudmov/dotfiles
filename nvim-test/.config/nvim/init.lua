@@ -6,9 +6,9 @@ vim.g.maplocalleader = ' '
 vim.keymap.set('i', '<M-BS>', '<C-w>') -- delete with options + backspace
 vim.keymap.set('i', '<D-BS>', '<C-u>') -- delete with command + backspace
 -- Remap escape key
-vim.keymap.set('i', 'jk', '<Esc>')
+vim.keymap.set({'i', 'v'}, 'jk', '<Esc>')
 vim.keymap.set('i', 'JK', '<Esc>')
-vim.keymap.set('v', 'jk', '<Esc>')
+vim.keymap.set('t', 'jk', '<C-\\><C-n> :hide<CR>')  -- Exit terminal mode
 -- Delete without yanking
 vim.keymap.set('n', 'x', '"_x')
 vim.keymap.set('v', 'x', '"_x')
@@ -22,7 +22,8 @@ vim.keymap.set('n', '<c-h>', ':wincmd h<CR>')
 vim.keymap.set('n', '<c-j>', ':wincmd j<CR>')
 vim.keymap.set('n', '<c-k>', ':wincmd k<CR>')
 vim.keymap.set('n', '<c-l>', ':wincmd l<CR>')
-
+-- Nice resource function
+vim.keymap.set({'n', 'i', 'v'}, '<leader>rr', ':source $MYVIMRC<CR>', { noremap = true, silent = false }) 
 
 -- [[ Settings ]]
 -- Relative line numbers enabled
@@ -43,7 +44,6 @@ vim.opt.smartindent = true   -- Smart autoindenting on new lines
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 -- Colorscheme
-vim.cmd.colorscheme('habamax')
 vim.opt.termguicolors = true
 -- Hide mode
 vim.opt.showmode = false
@@ -106,7 +106,6 @@ vim.api.nvim_create_autocmd('TermOpen', {
 -- Terminal mappings
 -- vim.o.shell = 'sh' -- uncomment if bash/zsh is too slow
 -- vim.keymap.set('n', '<leader>t', ':sp | terminal<CR>i')  -- split above
-vim.keymap.set('t', 'jk', '<C-\\><C-n> :hide<CR>')  -- Exit terminal mode
 
 
 -- [[ Plugins ]]
