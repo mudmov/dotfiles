@@ -6,12 +6,11 @@ vim.g.maplocalleader = ' '
 vim.keymap.set('i', '<M-BS>', '<C-w>') -- delete with options + backspace
 vim.keymap.set('i', '<D-BS>', '<C-u>') -- delete with command + backspace
 -- Remap escape key
-vim.keymap.set({'i', 'v'}, 'jk', '<Esc>')
+vim.keymap.set('i', 'jk', '<Esc>')
 vim.keymap.set('i', 'JK', '<Esc>')
 vim.keymap.set('t', 'jk', '<C-\\><C-n> :hide<CR>')  -- Exit terminal mode
 -- Delete without yanking
-vim.keymap.set('n', 'x', '"_x')
-vim.keymap.set('v', 'x', '"_x')
+vim.keymap.set({'n','v'}, 'x', '"_x')
 -- Center after half page jump 
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
@@ -23,7 +22,14 @@ vim.keymap.set('n', '<c-j>', ':wincmd j<CR>')
 vim.keymap.set('n', '<c-k>', ':wincmd k<CR>')
 vim.keymap.set('n', '<c-l>', ':wincmd l<CR>')
 -- Nice resource function
-vim.keymap.set({'n', 'i', 'v'}, '<leader>rr', ':source $MYVIMRC<CR>', { noremap = true, silent = false }) 
+vim.keymap.set({'n', 'i', 'v'}, '<leader>rr', ':source $MYVIMRC<CR>', { noremap = true, silent = false })
+-- Remove higlighting after search
+vim.keymap.set('n', '<Esc>', ':let @/ = ""<CR>:noh<CR>', { silent = true })
+-- Temporary solution for toggling diagnostics
+vim.keymap.set('n', 'gK', function()
+  local new_config = not vim.diagnostic.config().virtual_lines
+  vim.diagnostic.config({ virtual_lines = new_config })
+end, { desc = 'Toggle diagnostic virtual_lines' })
 
 -- [[ Settings ]]
 -- Relative line numbers enabled
