@@ -10,13 +10,18 @@ vim.keymap.set('i', 'jk', '<Esc>')
 vim.keymap.set('i', 'JK', '<Esc>')
 vim.keymap.set('v', 'jk', '<Esc>')
 -- Delete without yanking
-vim.keymap.set('n', 'd', '"_d')
-vim.keymap.set('v', 'd', '"_d')
+vim.keymap.set('n', 'x', '"_x')
+vim.keymap.set('v', 'x', '"_x')
 -- Center after half page jump 
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
 -- Don't lose register when pasting in visual mode
 vim.keymap.set('x', 'p', 'pgvy', { noremap = true })
+-- Window navigation
+vim.keymap.set('n', '<c-h>', ':wincmd h<CR>')
+vim.keymap.set('n', '<c-j>', ':wincmd j<CR>')
+vim.keymap.set('n', '<c-k>', ':wincmd k<CR>')
+vim.keymap.set('n', '<c-l>', ':wincmd l<CR>')
 
 
 -- [[ Settings ]]
@@ -100,7 +105,7 @@ vim.api.nvim_create_autocmd('TermOpen', {
 })
 -- Terminal mappings
 -- vim.o.shell = 'sh' -- uncomment if bash/zsh is too slow
-vim.keymap.set('n', '<leader>t', ':sp | terminal<CR>i')  -- split above
+-- vim.keymap.set('n', '<leader>t', ':sp | terminal<CR>i')  -- split above
 vim.keymap.set('t', 'jk', '<C-\\><C-n> :hide<CR>')  -- Exit terminal mode
 
 
