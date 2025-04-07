@@ -19,7 +19,11 @@ return {
           diffview = true,
         }
       })
-    end
+    end,
+    keys = {
+      vim.keymap.set('n', '<leader>gg', ":Neogit kind=floating<CR>"),
+      vim.keymap.set('n', '<leader>ggd', ":Neogit cwd=")
+    },
   },
   {
     "lewis6991/gitsigns.nvim",
