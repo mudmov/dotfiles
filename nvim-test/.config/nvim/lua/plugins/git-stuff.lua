@@ -12,6 +12,10 @@ return {
       "sindrets/diffview.nvim",
       "nvim-telescope/telescope.nvim",
     },
+    keys = {
+      {'<leader>gg', ":Neogit kind=floating<CR>", desc = "Open Neogit"},
+      {'<leader>ggd', ":Neogit cwd=", desc = "Open Neogit in dir"}
+    },
     config = function()
       require('neogit').setup({
         integrations = {
@@ -19,11 +23,7 @@ return {
           diffview = true,
         }
       })
-    end,
-    keys = {
-      vim.keymap.set('n', '<leader>gg', ":Neogit kind=floating<CR>"),
-      vim.keymap.set('n', '<leader>ggd', ":Neogit cwd=")
-    },
+    end
   },
   {
     "lewis6991/gitsigns.nvim",
