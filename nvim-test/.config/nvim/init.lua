@@ -36,7 +36,7 @@ end, { desc = 'Toggle diagnostic virtual_lines' })
 vim.opt.number = true
 vim.wo.relativenumber = true
 -- Disable swap files
-vim.opt.swapwfile = false
+vim.opt.swapfile = false
 -- Sync system and vim clipboard
 vim.opt.clipboard = 'unnamedplus'
 -- Delay waiting for multi key commands (e.g. jk to exit) 
