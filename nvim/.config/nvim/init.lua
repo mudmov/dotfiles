@@ -39,6 +39,18 @@ vim.wo.relativenumber = true
 vim.opt.swapfile = false
 -- Sync system and vim clipboard
 vim.opt.clipboard = 'unnamedplus'
+vim.g.clipboard = {
+  name = 'OSC 52',
+  copy = {
+    ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+    ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+  },
+  paste = {
+    ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+    ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+  },
+}
+
 -- Delay waiting for multi key commands (e.g. jk to exit) 
 vim.opt.timeoutlen = 500  -- (default was 1000ms)
 -- Indentation
