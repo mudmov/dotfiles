@@ -14,3 +14,18 @@
 - For tmux you have to install `tpm`
 
 (will need to write a script for these to automate)
+
+### Nvim
+Installation:
+```bash
+appimage installation instructions & symlinking...
+chmod u+x ...
+```
+Requires:
+```txt
+make
+nodejs
+ripgrep
+fzf
+gcc
+```
