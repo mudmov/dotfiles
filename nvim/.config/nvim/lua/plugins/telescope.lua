@@ -57,5 +57,6 @@ return {
     vim.keymap.set('n', '<leader>f/', builtin.buffers, { desc = 'Vim Buffers' })
     vim.keymap.set('n', '<leader>f.', builtin.oldfiles, { desc = '[F]ind Recently Closed' })
     vim.keymap.set('n', '<leader>fp', function() builtin.find_files({ cwd = vim.fn.stdpath('config') }) end, { desc = '[F]ind [P]lugin Config' })
+    vim.keymap.set('n', '<leader>fr', builtin.resume, { desc = '[F]ind [R]esume last search' })
   end,
 }
