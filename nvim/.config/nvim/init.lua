@@ -82,6 +82,8 @@ vim.opt.showmode = false
 vim.opt.cursorline = true
 -- Show gutter column
 vim.opt.signcolumn = 'yes'
+-- remove the ugly tildas in the gutter
+vim.opt.fillchars:append({ eob = " " })
 -- Show trails and whitespaces
 vim.opt.list = true
 -- Minimal number of screen lines to keep above and below the cursor.
