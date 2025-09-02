@@ -11,6 +11,20 @@ else
     compinit -C
 fi
 
+# Ghostty zsh integration (blinking cursor in vi mode)
+if [ -n "${GHOSTTY_RESOURCES_DIR}" ]; then
+  source "${GHOSTTY_RESOURCES_DIR}/shell-integration/zsh/ghostty-integration"
+fi
+function zle-keymap-select {
+  case $KEYMAP in
+    vicmd) echo -ne '\e[2 q' ;;   # block cursor for command mode
+    viins) echo -ne '\e[6 q' ;;   # beam cursor for insert mode
+    visual) echo -ne '\e[4 q' ;;  # underline cursor for visual mode (optional)
+    *) echo -ne '\e[6 q' ;;       # default to beam cursor
+  esac
+}
+zle -N zle-keymap-select
+
 # Switch to vi mode and bindkey
 bindkey -v
 bindkey -e jk vi-cmd-mode
