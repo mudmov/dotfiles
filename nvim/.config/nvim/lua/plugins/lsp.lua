@@ -1,3 +1,20 @@
+local lsp_servers = {
+  "lua_ls",
+  "bashls",
+  "dockerls",
+  "eslint",
+  "jsonls",
+  "ruff",
+  "pyright",
+  "yamlls",
+  "ts_ls",
+}
+
+local linters_formatters = {
+  "eslint_d",
+  "prettier"
+}
+
 return {
   {
     "williamboman/mason.nvim",
@@ -9,21 +26,15 @@ return {
     "williamboman/mason-lspconfig.nvim",
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = {
-          "lua_ls",
-          "ansiblels",
-          "bashls",
-          "dockerls",
-          "html",
-          "eslint",
-          "jsonls",
-          "grammarly",
-          "nginx_language_server",
-          "ruff",
-          "sqlls",
-          "ltex",
-          "yamlls"
-        }
+        ensure_installed = lsp_servers
+      })
+    end
+  },
+  {
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    config = function()
+      require("mason-tool-installer").setup({
+        ensure_installed = linters_formatters
       })
     end
   },
@@ -37,11 +48,18 @@ return {
             { path = "${3rd}/luv/library", words = { "vim%.uv" } },
           },
         },
-      }, 
+      },
     },
     config = function()
       local capabilities = require('blink.cmp').get_lsp_capabilities()
       local lspconfig = require("lspconfig")
+
+      -- Setup all servers with default config
+      for _, server in ipairs(lsp_servers) do
+        lspconfig[server].setup({ capabilities = capabilities })
+      end
+
+      -- Override with custom configurations
       lspconfig.lua_ls.setup({
         capabilities = capabilities,
         settings = {
@@ -50,37 +68,27 @@ return {
               version = 'LuaJIT',
             },
             diagnostics = {
-              globals = {'vim', 'require'}  -- Tell the language server that 'vim' is a global
+              globals = {'vim', 'require'}
             },
             workspace = {
-              -- Make the server aware of Neovim runtime files
               library = vim.api.nvim_get_runtime_file("", true)
             }
           }
         }
       })
-      lspconfig.ansiblels.setup({})
-      lspconfig.bashls.setup({})
-      lspconfig.dockerls.setup({})
-      lspconfig.html.setup({})
-      lspconfig.eslint.setup({})
-      lspconfig.jsonls.setup({})
-      lspconfig.grammarly.setup({})
-      lspconfig.nginx_language_server.setup({})
+
       lspconfig.ruff.setup({
+        capabilities = capabilities,
         settings = {
           ruff = {
             formatEnabled = true,
-            format = { "I" }  -- Additional formatting rules, if needed.
+            format = { "I" }
           }
         },
         on_attach = function(client, bufnr)
           vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, { buffer = bufnr })
         end,
       })
-      lspconfig.sqlls.setup({})
-      lspconfig.ltex.setup({})
-      lspconfig.yamlls.setup({})
 
       vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
       vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
@@ -88,5 +96,3 @@ return {
     end
   },
 }
-
-
