@@ -14,5 +14,10 @@ return {
         },
       },
     },
+    keymap = {
+      preset = "default",  -- start with default mappings
+      ["<Tab>"] = { "accept", "fallback" },   -- confirm selection or insert tab if no menu
+      ["<S-Tab>"] = { "select_prev", "fallback" }, -- move back or insert shift+tab
+    },
   },
 }
