@@ -10,7 +10,7 @@ vim.keymap.set('i', 'jk', '<Esc>')
 vim.keymap.set('i', 'JK', '<Esc>')
 vim.keymap.set('t', 'jk', '<C-\\><C-n> :hide<CR>')  -- Exit terminal mode
 -- Delete without yanking
-vim.keymap.set({'n','v'}, 'x', '"_x')
+-- vim.keymap.set({'n','v'}, 'x', '"_x')
 -- Center after half page jump 
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
