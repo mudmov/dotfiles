@@ -3,14 +3,25 @@ DISABLE_AUTO_UPDATE="true"
 DISABLE_MAGIC_FUNCTIONS="true"
 DISABLE_COMPFIX="true"
 
-# Smarter completion initialization
+# --- Env Variables ---
+export ZSH="$HOME/.oh-my-zsh"
+export PATH=$HOME/.local/bin:$PATH
+export EDITOR='nvim'
+
+
+# We do this FIRST so 'compdef' exists when plugins load.
 autoload -Uz compinit
-if [ "$(date +'%j')" != "$(stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)" ]; then
-    compinit
+
+# Check if .zcompdump exists and is less than 24 hours old
+# #q: qualifiers, N: nullglob, .mh+24: modified hours > 24
+if [[ -n ${ZDOTDIR:-$HOME}/.zcompdump(#qN.mh+24) ]]; then
+  compinit
 else
-    compinit -C
+  # -C skips the security check (fast mode)
+  compinit -C
 fi
 
+# --- Ghostty ---
 # Ghostty zsh integration (blinking cursor in vi mode)
 if [ -n "${GHOSTTY_RESOURCES_DIR}" ]; then
   source "${GHOSTTY_RESOURCES_DIR}/shell-integration/zsh/ghostty-integration"
@@ -25,39 +36,30 @@ function zle-keymap-select {
 }
 zle -N zle-keymap-select
 
-# Switch to vi mode and bindkey
-bindkey -v
-bindkey -e jk vi-cmd-mode
-
-# Oh My Zsh path
-export ZSH="$HOME/.oh-my-zsh"
-
-# If you come from bash you might have to change your $PATH.
-export PATH=$HOME/.local/bin:$PATH
-
-# Export default editor
-export EDITOR='nvim'
-
-# Aliases
-alias zsource="source $HOME/.zshrc"
-alias cc='clear'
-
 # Ghostty issues when connecting to remote
 if [[ "$TERM_PROGRAM" == "ghostty" ]]; then
     export TERM=xterm-256color
 fi
 
-# Plugins
+# Switch to vi mode and bindkey
+bindkey -v
+bindkey -e jk vi-cmd-mode
+
+# Aliases
+alias zsource="source $HOME/.zshrc"
+alias cc='clear'
+
+# dummy function so OMZ skips its internal heavy loading
+function compinit() { true; }
+
+# --- Plugins & Theme ---
 if [ -d "$HOME/.oh-my-zsh" ]; then
     ZSH_THEME="af-magic"
-    export ZSH="$HOME/.oh-my-zsh"
-
     plugins=(
         git
         zsh-autosuggestions
         zsh-syntax-highlighting
     )
-
     source $ZSH/oh-my-zsh.sh
 fi
 
@@ -97,3 +99,13 @@ ssh_with_cleanup() {
 }
 alias ssh=ssh_with_cleanup
 
+# Lazy Load NVM
+export NVM_DIR="$HOME/.nvm"
+function nvm node npm npx {
+  unfunction nvm node npm npx
+  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+  "$0" "$@"
+}
+
+# Generated for envman. Do not edit.
+[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
