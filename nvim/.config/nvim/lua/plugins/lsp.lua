@@ -2,17 +2,12 @@ local lsp_servers = {
   "lua_ls",
   "bashls",
   "dockerls",
-  "eslint",
   "jsonls",
   "ruff",
   "pyright",
   "yamlls",
-  "ts_ls",
-}
-
-local linters_formatters = {
-  "eslint_d",
-  "prettier"
+  "vtsls",
+  "biome"
 }
 
 return {
@@ -31,14 +26,6 @@ return {
     end
   },
   {
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
-    config = function()
-      require("mason-tool-installer").setup({
-        ensure_installed = linters_formatters
-      })
-    end
-  },
-  {
     "neovim/nvim-lspconfig",
     dependencies = {
       {
@@ -52,47 +39,48 @@ return {
     },
     config = function()
       local capabilities = require('blink.cmp').get_lsp_capabilities()
-      local lspconfig = require("lspconfig")
 
-      -- Setup all servers with default config
-      for _, server in ipairs(lsp_servers) do
-        lspconfig[server].setup({ capabilities = capabilities })
-      end
-
-      -- Override with custom configurations
-      lspconfig.lua_ls.setup({
-        capabilities = capabilities,
-        settings = {
-          Lua = {
-            runtime = {
-              version = 'LuaJIT',
-            },
-            diagnostics = {
-              globals = {'vim', 'require'}
-            },
-            workspace = {
-              library = vim.api.nvim_get_runtime_file("", true)
+      -- NATIVE 0.11+ WAY: Define custom configs first
+      local configs = {
+        lua_ls = {
+          settings = {
+            Lua = {
+              runtime = { version = 'LuaJIT' },
+              diagnostics = { globals = { 'vim', 'require' } },
+              workspace = { checkThirdParty = false, library = vim.api.nvim_get_runtime_file("", true) }
             }
           }
-        }
-      })
-
-      lspconfig.ruff.setup({
-        capabilities = capabilities,
-        settings = {
-          ruff = {
-            formatEnabled = true,
-            format = { "I" }
-          }
         },
-        on_attach = function(client, bufnr)
-          vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, { buffer = bufnr })
-        end,
-      })
+        ruff = {
+          settings = {
+            ruff = { formatEnabled = true, format = { "I" } }
+          },
+          -- Note: Handlers/Keymaps are better handled via LspAttach autocmd,
+          -- but keeping it here for your preference.
+        },
+        vtsls = {
+          root_dir = function(fname)
+            local util = require("lspconfig.util")
+            return util.root_pattern(".git")(fname)
+          end,
+          single_file_support = false,
+        }
+      }
 
-      vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
-      vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
-      vim.keymap.set({ 'n' }, '<leader>ca', vim.lsp.buf.code_action, {})
+      -- THE LOOP: Register and Enable
+      for _, server in ipairs(lsp_servers) do
+        local config = configs[server] or {}
+        config.capabilities = capabilities
+
+        vim.lsp.config(server, config)
+        vim.lsp.enable(server)
+      end
+
+      -- GLOBAL KEYMAPS
+      vim.keymap.set('n', 'K', vim.lsp.buf.hover, { desc = "LSP Hover" })
+      vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = "LSP Definition" })
+      vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, { desc = "LSP Code Action" })
+      vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, { desc = "LSP Format" })
     end
   },
 }

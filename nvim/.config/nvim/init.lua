@@ -33,6 +33,8 @@ end, { desc = 'Toggle diagnostic virtual_lines' })
 -- Teminal like shortcuts
 vim.keymap.set('n', '<C-a>', '^')
 vim.keymap.set('n', '<C-e>', '$')
+-- Quick close buffer / tab
+vim.keymap.set('n', '<leader>q', ':bd<CR>')
 
 -- [[ Settings ]]
 -- Relative line numbers enabled
