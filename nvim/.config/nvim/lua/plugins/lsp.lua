@@ -2,17 +2,12 @@ local lsp_servers = {
   "lua_ls",
   "bashls",
   "dockerls",
-  "eslint",
   "jsonls",
   "ruff",
   "pyright",
   "yamlls",
-  "ts_ls",
-}
-
-local linters_formatters = {
-  "eslint_d",
-  "prettier"
+  "vtsls",
+  "biome"
 }
 
 return {
@@ -31,14 +26,6 @@ return {
     end
   },
   {
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
-    config = function()
-      require("mason-tool-installer").setup({
-        ensure_installed = linters_formatters
-      })
-    end
-  },
-  {
     "neovim/nvim-lspconfig",
     dependencies = {
       {
@@ -53,6 +40,7 @@ return {
     config = function()
       local capabilities = require('blink.cmp').get_lsp_capabilities()
       local lspconfig = require("lspconfig")
+      local util = require("lspconfig.util")
 
       -- Setup all servers with default config
       for _, server in ipairs(lsp_servers) do
@@ -68,7 +56,7 @@ return {
               version = 'LuaJIT',
             },
             diagnostics = {
-              globals = {'vim', 'require'}
+              globals = { 'vim', 'require' }
             },
             workspace = {
               library = vim.api.nvim_get_runtime_file("", true)
@@ -88,6 +76,15 @@ return {
         on_attach = function(client, bufnr)
           vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, { buffer = bufnr })
         end,
+      })
+
+      lspconfig.vtsls.setup({
+        capabilities = capabilities,
+        root_dir = function(fname)
+          local util = require("lspconfig.util")
+          return util.root_pattern(".git")(fname)
+        end,
+        single_file_support = false,
       })
 
       vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
