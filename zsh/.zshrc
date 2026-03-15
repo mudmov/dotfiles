@@ -1,3 +1,6 @@
+# Load secrets
+source ~/.secrets
+
 # Speeding up omz
 DISABLE_AUTO_UPDATE="true"
 DISABLE_MAGIC_FUNCTIONS="true"
@@ -7,7 +10,6 @@ DISABLE_COMPFIX="true"
 export ZSH="$HOME/.oh-my-zsh"
 export PATH=$HOME/.local/bin:$PATH
 export EDITOR='nvim'
-
 
 # We do this FIRST so 'compdef' exists when plugins load.
 autoload -Uz compinit
