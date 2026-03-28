@@ -36,10 +36,22 @@ install_nvim_appimage() {
     fi
   fi
 
+  local tmpdir
+  tmpdir="$(mktemp -d)"
+
   log_info "Downloading latest Neovim AppImage..."
-  curl -fsSL -o "$target" https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
-  chmod u+x "$target"
-  log_success "Neovim AppImage installed to $target"
+  curl -fsSL -o "$tmpdir/nvim.appimage" https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
+  chmod u+x "$tmpdir/nvim.appimage"
+
+  # Extract instead of running directly — avoids FUSE dependency on servers
+  log_info "Extracting AppImage (no FUSE required)..."
+  cd "$tmpdir" && ./nvim.appimage --appimage-extract >/dev/null 2>&1
+  rm -rf "$HOME/.local/lib/nvim-squashfs"
+  mv "$tmpdir/squashfs-root" "$HOME/.local/lib/nvim-squashfs"
+  ln -sf "$HOME/.local/lib/nvim-squashfs/usr/bin/nvim" "$target"
+  rm -rf "$tmpdir"
+
+  log_success "Neovim installed to $target"
 }
 
 setup() {
