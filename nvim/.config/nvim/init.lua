@@ -15,8 +15,8 @@ vim.keymap.set('t', 'jk', '<C-\\><C-n> :hide<CR>')  -- Exit terminal mode
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
 -- Don't lose register when pasting in visual mode
-vim.keymap.set('x', 'p', 'pgvy', { noremap = true })
--- Window navigation
+vim.keymap.set('x', 'p', 'P', { noremap = true })
+-- Window navigation (tmux sends these when it detects vim)
 vim.keymap.set('n', '<c-h>', ':wincmd h<CR>')
 vim.keymap.set('n', '<c-j>', ':wincmd j<CR>')
 vim.keymap.set('n', '<c-k>', ':wincmd k<CR>')
@@ -121,14 +121,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
--- Move line up or down
-for _, mode in ipairs({'n', 'i'}) do
-  vim.keymap.set(mode, '<C-j>', '<Esc>:m .+1<CR>==', { noremap = true, silent = true })
-  vim.keymap.set(mode, '<C-k>', '<Esc>:m .-2<CR>==', { noremap = true, silent = true })
-end
--- Move selected lines up or down in visual mode
-vim.keymap.set('v', '<C-j>', ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
-vim.keymap.set('v', '<C-k>', ":m '<-2<CR>gv=gv", { noremap = true, silent = true })
 
 
 -- [[ Terminal ]]

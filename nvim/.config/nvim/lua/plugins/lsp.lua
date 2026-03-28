@@ -81,7 +81,7 @@ return {
       vim.keymap.set('n', 'K', vim.lsp.buf.hover, { desc = "LSP Hover" })
       vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = "LSP Definition" })
       vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, { desc = "LSP Code Action" })
-      vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, { desc = "LSP Format" })
+      vim.keymap.set("n", "<leader>lf", vim.lsp.buf.format, { desc = "LSP Format" })
     end
   },
 }

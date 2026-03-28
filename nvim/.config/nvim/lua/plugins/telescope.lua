@@ -15,7 +15,7 @@ return {
       defaults = {
         layout_strategy = 'horizontal',
         layout_config = { prompt_position = 'bottom' },
-        sorting_strategy = 'ascending',
+        sorting_strategy = 'descending',
       },
       extensions = {
         ['ui-select'] = {
