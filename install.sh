@@ -157,8 +157,31 @@ process_package() {
 
   if [[ ${#dep_failures[@]} -gt 0 ]]; then
     log_warn "Package '$pkg' had failures: ${dep_failures[*]}"
+    LAST_PKG_FAILURES="${dep_failures[*]}"
     return 1
   fi
+  LAST_PKG_FAILURES=""
+}
+
+print_summary() {
+  echo ""
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "  Summary"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+
+  local pkg
+  for pkg in "${SUMMARY_SUCCESS[@]:-}"; do
+    [[ -n "$pkg" ]] && printf "  ${GREEN}✔${NC}  %s\n" "$pkg"
+  done
+  for pkg in "${SUMMARY_WARN[@]:-}"; do
+    [[ -n "$pkg" ]] && printf "  ${YELLOW}⚠${NC}  %s — failures: %s\n" "$pkg" "${SUMMARY_WARN_DETAILS[$pkg]:-unknown}"
+  done
+  for pkg in "${SUMMARY_FAIL[@]:-}"; do
+    [[ -n "$pkg" ]] && printf "  ${RED}✘${NC}  %s — %s\n" "$pkg" "${SUMMARY_FAIL_DETAILS[$pkg]:-failed}"
+  done
+
+  echo ""
 }
 
 main() {
@@ -173,22 +196,36 @@ main() {
     select_packages
   fi
 
+  # Summary tracking arrays
+  SUMMARY_SUCCESS=()
+  SUMMARY_WARN=()
+  SUMMARY_FAIL=()
+  declare -A SUMMARY_WARN_DETAILS
+  declare -A SUMMARY_FAIL_DETAILS
   local any_failures=0
 
   for pkg in "${SELECTED[@]}"; do
     if [[ ! -d "$DOTFILES_DIR/$pkg" ]]; then
       log_warn "Package '$pkg' not found, skipping"
+      SUMMARY_FAIL+=("$pkg")
+      SUMMARY_FAIL_DETAILS["$pkg"]="not found"
+      any_failures=1
       continue
     fi
     if ! process_package "$pkg"; then
+      # Package had some dep/setup failures but stow still ran
+      SUMMARY_WARN+=("$pkg")
+      SUMMARY_WARN_DETAILS["$pkg"]="${LAST_PKG_FAILURES:-unknown}"
       any_failures=1
+    else
+      SUMMARY_SUCCESS+=("$pkg")
     fi
   done
 
+  print_summary
+
   if [[ "$any_failures" -eq 1 ]]; then
-    log_warn "Done with some failures (see above)"
-  else
-    log_success "Done!"
+    exit 1
   fi
 }
 
