@@ -97,9 +97,9 @@ select_packages() {
 run_stow() {
   local pkg="$1"
   case "$MODE" in
-    install)   stow -v -d "$DOTFILES_DIR" -t "$HOME" "$pkg" ;;
-    uninstall) stow -v -D -d "$DOTFILES_DIR" -t "$HOME" "$pkg" ;;
-    restow)    stow -v -R -d "$DOTFILES_DIR" -t "$HOME" "$pkg" ;;
+    install)   stow -v --ignore='deps\.sh' -d "$DOTFILES_DIR" -t "$HOME" "$pkg" ;;
+    uninstall) stow -v --ignore='deps\.sh' -D -d "$DOTFILES_DIR" -t "$HOME" "$pkg" ;;
+    restow)    stow -v --ignore='deps\.sh' -R -d "$DOTFILES_DIR" -t "$HOME" "$pkg" ;;
   esac
 }
 
