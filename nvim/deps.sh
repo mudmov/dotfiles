@@ -45,7 +45,8 @@ install_nvim_appimage() {
 
   # Extract instead of running directly — avoids FUSE dependency on servers
   log_info "Extracting AppImage (no FUSE required)..."
-  cd "$tmpdir" && ./nvim.appimage --appimage-extract >/dev/null 2>&1
+  (cd "$tmpdir" && ./nvim.appimage --appimage-extract >/dev/null 2>&1)
+  mkdir -p "$HOME/.local/lib"
   rm -rf "$HOME/.local/lib/nvim-squashfs"
   mv "$tmpdir/squashfs-root" "$HOME/.local/lib/nvim-squashfs"
   ln -sf "$HOME/.local/lib/nvim-squashfs/usr/bin/nvim" "$target"
