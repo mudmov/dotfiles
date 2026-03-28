@@ -5,13 +5,15 @@ set -euo pipefail
 
 DOTFILES_DIR="$HOME/dotfiles"
 REPO="https://github.com/mudmov/dotfiles.git"
+BRANCH="${DOTFILES_BRANCH:-main}"
 
 if [ -d "$DOTFILES_DIR" ]; then
   echo "Dotfiles already cloned at $DOTFILES_DIR, pulling latest..."
+  git -C "$DOTFILES_DIR" checkout "$BRANCH"
   git -C "$DOTFILES_DIR" pull
 else
-  echo "Cloning dotfiles..."
-  git clone "$REPO" "$DOTFILES_DIR"
+  echo "Cloning dotfiles (branch: $BRANCH)..."
+  git clone -b "$BRANCH" "$REPO" "$DOTFILES_DIR"
 fi
 
 cd "$DOTFILES_DIR"
