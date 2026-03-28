@@ -21,7 +21,8 @@ return {
     "williamboman/mason-lspconfig.nvim",
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = lsp_servers
+        ensure_installed = lsp_servers,
+        automatic_enable = false,
       })
     end
   },

@@ -1,5 +1,5 @@
 # Load secrets
-source ~/.secrets
+[[ -f ~/.secrets ]] && source ~/.secrets
 
 # Speeding up omz
 DISABLE_AUTO_UPDATE="true"
