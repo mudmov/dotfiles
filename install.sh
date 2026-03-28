@@ -11,7 +11,7 @@ source "$DOTFILES_DIR/lib/common.sh"
 MODE="install"  # install | uninstall | restow | check | help
 
 # Parse flags
-while [[ "${1:-}" == --* ]]; do
+while [[ "${1:-}" == -* ]]; do
   case "$1" in
     --uninstall) MODE="uninstall"; shift ;;
     --restow)   MODE="restow"; shift ;;
@@ -123,7 +123,7 @@ process_package() {
     source "$deps_file"
 
     # Install system dependencies
-    if declare -p DEPS &>/dev/null 2>&1; then
+    if declare -p DEPS &>/dev/null; then
       for dep in "${DEPS[@]}"; do
         if ! command -v "$dep" &>/dev/null; then
           log_info "Installing dependency: $dep"
@@ -235,7 +235,7 @@ check_packages() {
     # Source deps.sh to get DEPS array
     (
       source "$deps_file"
-      if ! declare -p DEPS &>/dev/null 2>&1; then
+      if ! declare -p DEPS &>/dev/null; then
         echo "  $pkg: no DEPS defined"
         exit 0
       fi
