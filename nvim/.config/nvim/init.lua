@@ -1,49 +1,59 @@
+local opt = vim.opt
+local keymap = vim.keymap.set
+
 -- [[ Keybinds ]]
--- Set Leader
 vim.g.mapleader = " "
-vim.g.maplocalleader = ' '
+vim.g.maplocalleader = " "
+
 -- Mac Specific Settings
-vim.keymap.set('i', '<M-BS>', '<C-w>') -- delete with options + backspace
-vim.keymap.set('i', '<D-BS>', '<C-u>') -- delete with command + backspace
+keymap('i', '<M-BS>', '<C-w>')
+keymap('i', '<D-BS>', '<C-u>')
+
 -- Remap escape key
-vim.keymap.set('i', 'jk', '<Esc>')
-vim.keymap.set('i', 'JK', '<Esc>')
-vim.keymap.set('t', 'jk', '<C-\\><C-n> :hide<CR>')  -- Exit terminal mode
--- Delete without yanking
--- vim.keymap.set({'n','v'}, 'x', '"_x')
--- Center after half page jump 
-vim.keymap.set('n', '<C-d>', '<C-d>zz')
-vim.keymap.set('n', '<C-u>', '<C-u>zz')
+keymap('i', 'jk', '<Esc>')
+keymap('i', 'JK', '<Esc>')
+keymap('t', 'jk', '<C-\\><C-n><cmd>hide<cr>')
+
+-- Center after half page jump
+keymap('n', '<C-d>', '<C-d>zz')
+keymap('n', '<C-u>', '<C-u>zz')
+
 -- Don't lose register when pasting in visual mode
-vim.keymap.set('x', 'p', 'P', { noremap = true })
+keymap('x', 'p', 'P')
+
 -- Window navigation (tmux sends these when it detects vim)
-vim.keymap.set('n', '<c-h>', ':wincmd h<CR>')
-vim.keymap.set('n', '<c-j>', ':wincmd j<CR>')
-vim.keymap.set('n', '<c-k>', ':wincmd k<CR>')
-vim.keymap.set('n', '<c-l>', ':wincmd l<CR>')
--- Nice resource function
-vim.keymap.set({'n', 'i', 'v'}, '<leader>rr', ':source $MYVIMRC<CR>', { noremap = true, silent = false })
--- Remove higlighting after search
-vim.keymap.set('n', '<Esc>', ':let @/ = ""<CR>:noh<CR>', { silent = true })
--- Temporary solution for toggling diagnostics
-vim.keymap.set('n', 'gK', function()
+keymap('n', '<c-h>', '<c-w>h')
+keymap('n', '<c-j>', '<c-w>j')
+keymap('n', '<c-k>', '<c-w>k')
+keymap('n', '<c-l>', '<c-w>l')
+
+-- Reload config
+keymap({'n', 'i', 'v'}, '<leader>rr', function() vim.cmd.source(vim.env.MYVIMRC) end)
+
+-- Clear search highlighting
+keymap('n', '<Esc>', function()
+  vim.fn.setreg('/', '')
+  vim.cmd.nohlsearch()
+end, { silent = true })
+
+-- Toggle diagnostic virtual lines
+keymap('n', 'gK', function()
   local new_config = not vim.diagnostic.config().virtual_lines
   vim.diagnostic.config({ virtual_lines = new_config })
 end, { desc = 'Toggle diagnostic virtual_lines' })
--- Teminal like shortcuts
-vim.keymap.set('n', '<C-a>', '^')
-vim.keymap.set('n', '<C-e>', '$')
--- Quick close buffer / tab
-vim.keymap.set('n', '<leader>q', ':bd<CR>')
+
+-- Terminal-like line navigation
+keymap('n', '<C-a>', '^')
+keymap('n', '<C-e>', '$')
+
+-- Quick close buffer
+keymap('n', '<leader>q', '<cmd>bd<cr>')
 
 -- [[ Settings ]]
--- Relative line numbers enabled
-vim.opt.number = true
-vim.wo.relativenumber = true
--- Disable swap files
-vim.opt.swapfile = false
--- Sync system and vim clipboard
-vim.o.clipboard = "unnamedplus"
+opt.number = true
+opt.relativenumber = true
+opt.swapfile = false
+opt.clipboard = "unnamedplus"
 
 local function paste()
   return {
@@ -64,56 +74,43 @@ vim.g.clipboard = {
   },
 }
 
--- Delay waiting for multi key commands (e.g. jk to exit) 
-vim.opt.timeoutlen = 500  -- (default was 1000ms)
--- Indentation
-vim.opt.expandtab = true     -- Use spaces instead of tabs
-vim.opt.shiftwidth = 2       -- Size of indent
-vim.opt.tabstop = 2          -- Size of tab
-vim.opt.softtabstop = 2      -- Number of spaces tab counts for in insert mode
-vim.opt.autoindent = true    -- Copy indent from current line
-vim.opt.smartindent = true   -- Smart autoindenting on new lines
--- Windows
-vim.opt.splitright = true
-vim.opt.splitbelow = true
--- Colorscheme
-vim.opt.termguicolors = true
--- Hide mode
-vim.opt.showmode = false
--- Show which line the cursor is on
-vim.opt.cursorline = true
--- Show gutter column
-vim.opt.signcolumn = 'yes'
--- remove the ugly tildas in the gutter
-vim.opt.fillchars:append({ eob = " " })
--- Show trails and whitespaces
-vim.opt.list = true
--- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
--- Set initial scrolloff value
+opt.timeoutlen = 500
+opt.expandtab = true
+opt.shiftwidth = 2
+opt.tabstop = 2
+opt.softtabstop = 2
+opt.autoindent = true
+opt.smartindent = true
+opt.splitright = true
+opt.splitbelow = true
+opt.termguicolors = true
+opt.showmode = false
+opt.cursorline = true
+opt.signcolumn = 'yes'
+opt.fillchars:append({ eob = " " })
+opt.list = true
+opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+
 local function update_scrolloff()
-  vim.opt.scrolloff = math.floor(vim.api.nvim_win_get_height(0)/2)
+  opt.scrolloff = math.floor(vim.api.nvim_win_get_height(0) / 2)
 end
 update_scrolloff()
--- Update scrolloff when window size changes
-vim.api.nvim_create_autocmd({'VimResized'}, {
+
+vim.api.nvim_create_autocmd('VimResized', {
   callback = update_scrolloff,
-  desc = 'Update scrolloff when window is resized'
+  desc = 'Update scrolloff when window is resized',
 })
--- Disable Neotree
+
+-- Disable netrw (Oil handles file browsing)
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
--- Search
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
-vim.opt.hlsearch = true
-vim.opt.inccommand = 'split'
+opt.ignorecase = true
+opt.smartcase = true
+opt.hlsearch = true
+opt.inccommand = 'split'
 
 -- [[ Autocommands ]]
--- Highlight when yanking (copying) text
---  Try it with `yap` in normal mode
---  See `:help vim.highlight.on_yank()`
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
@@ -122,18 +119,12 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
-
--- [[ Terminal ]]
 vim.api.nvim_create_autocmd('TermOpen', {
   callback = function()
     vim.opt_local.number = false
     vim.opt_local.relativenumber = false
-  end
+  end,
 })
--- Terminal mappings
--- vim.o.shell = 'sh' -- uncomment if bash/zsh is too slow
--- vim.keymap.set('n', '<leader>t', ':sp | terminal<CR>i')  -- split above
-
 
 -- [[ Plugins ]]
 require("config.lazy")
