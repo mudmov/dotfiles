@@ -41,4 +41,13 @@ setup() {
   else
     log_info "nvm already installed"
   fi
+
+  # Ensure ~/.secrets exists (sourced by .zshrc)
+  [[ -f "$HOME/.secrets" ]] || touch "$HOME/.secrets"
+
+  # Back up any existing .zshrc so stow can create symlink
+  if [[ -f "$HOME/.zshrc" && ! -L "$HOME/.zshrc" ]]; then
+    log_warn "Backing up existing ~/.zshrc to ~/.zshrc.bak"
+    mv "$HOME/.zshrc" "$HOME/.zshrc.bak"
+  fi
 }
