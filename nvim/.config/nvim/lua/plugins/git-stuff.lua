@@ -5,7 +5,7 @@ return {
       { "nvim-tree/nvim-web-devicons", lazy = true },
     },
     keys = {
-      { "<leader>gd", function() 
+      { "<leader>gd", function()
         if next(require("diffview.lib").views) == nil then
           vim.cmd("DiffviewOpen")
         else
@@ -23,7 +23,6 @@ return {
     },
     keys = {
       {'<leader>gg', ":Neogit kind=floating<CR>", desc = "Open Neogit"},
-      {'<leader>ggd', ":Neogit cwd=", desc = "Open Neogit in dir"}
     },
     config = function()
       require('neogit').setup({
@@ -37,9 +36,11 @@ return {
   {
     "lewis6991/gitsigns.nvim",
     config = function()
-      require('gitsigns').setup()
+      require('gitsigns').setup({
+        current_line_blame = false,
+      })
 
-      vim.keymap.set("n", "<leader>gp", ":Gitsigns preview_hunk<CR>", {})
+      vim.keymap.set("n", "<leader>gb", ":Gitsigns toggle_current_line_blame<CR>", { desc = "Toggle Git Blame" })
     end
   }
 }

@@ -2,7 +2,7 @@
 # ZSH package dependencies
 
 DESCRIPTION="Zsh shell with oh-my-zsh, autosuggestions, syntax highlighting, nvm"
-DEPS=(zsh fzf)
+DEPS=(zsh fzf zoxide fd)
 
 setup() {
   local ZSH_DIR="${HOME}/.oh-my-zsh"
