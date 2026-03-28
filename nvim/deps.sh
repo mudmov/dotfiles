@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Neovim package dependencies
 
+DESCRIPTION="Neovim editor with LSP, treesitter, telescope"
+
 # Package names vary by OS/package manager
 _os="$(detect_os)"
 _mgr="$(detect_pkg_manager)"

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Dependency manifest for tmux package
 
+DESCRIPTION="Terminal multiplexer with TPM plugin manager"
 DEPS=(tmux git)
 
 setup() {

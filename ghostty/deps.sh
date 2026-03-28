@@ -9,6 +9,8 @@ if [[ "$(detect_os)" != "macos" ]]; then
   return 0 2>/dev/null || exit 0
 fi
 
+DESCRIPTION="GPU-accelerated terminal emulator"
+MACOS_ONLY=true
 DEPS=()
 
 setup() {

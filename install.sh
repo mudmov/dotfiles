@@ -19,30 +19,77 @@ while [[ "${1:-}" == --* ]]; do
   esac
 done
 
-# Discover available packages (dirs containing a stow-style dotfile tree)
+# Get description for a package from its deps.sh
+get_pkg_description() {
+  local pkg="$1"
+  local deps_file="$DOTFILES_DIR/$pkg/deps.sh"
+  if [[ -f "$deps_file" ]]; then
+    local desc
+    desc="$(grep '^DESCRIPTION=' "$deps_file" | head -1 | sed 's/^DESCRIPTION="//' | sed 's/"$//')"
+    echo "${desc:-No description}"
+  else
+    echo "No description"
+  fi
+}
+
+# Check if a package is macOS-only
+is_macos_only() {
+  local pkg="$1"
+  local deps_file="$DOTFILES_DIR/$pkg/deps.sh"
+  [[ -f "$deps_file" ]] && grep -q '^MACOS_ONLY=true' "$deps_file"
+}
+
+# Discover available packages, filtered by OS
 available_packages() {
-  local pkg
+  local pkg current_os
+  current_os="$(detect_os)"
   for pkg in "$DOTFILES_DIR"/*/; do
     pkg="$(basename "$pkg")"
     [[ "$pkg" == "lib" ]] && continue
+    # Hide macOS-only packages on Linux
+    if [[ "$current_os" != "macos" ]] && is_macos_only "$pkg"; then
+      continue
+    fi
     echo "$pkg"
   done
 }
 
 # Interactive menu when no args given
 select_packages() {
-  local packages=()
+  local packages=() descriptions=()
   mapfile -t packages < <(available_packages)
+
+  echo ""
   log_info "Available packages:"
-  PS3="Enter numbers (space-separated) or 'a' for all: "
-  select pkg in "${packages[@]}" "ALL"; do
-    if [[ "$pkg" == "ALL" || "$REPLY" == "a" ]]; then
-      SELECTED=("${packages[@]}")
-    else
-      SELECTED=("$pkg")
-    fi
-    break
+  echo ""
+  local i
+  for i in "${!packages[@]}"; do
+    local desc
+    desc="$(get_pkg_description "${packages[$i]}")"
+    printf "  %s) %s — %s\n" "$((i + 1))" "${packages[$i]}" "$desc"
   done
+  echo ""
+  printf "Enter numbers (space-separated) or 'a' for all: "
+  read -r reply
+
+  if [[ "$reply" == "a" || "$reply" == "A" ]]; then
+    SELECTED=("${packages[@]}")
+  else
+    SELECTED=()
+    for num in $reply; do
+      local idx=$((num - 1))
+      if [[ $idx -ge 0 && $idx -lt ${#packages[@]} ]]; then
+        SELECTED+=("${packages[$idx]}")
+      else
+        log_warn "Invalid selection: $num"
+      fi
+    done
+  fi
+
+  if [[ ${#SELECTED[@]} -eq 0 ]]; then
+    log_error "No packages selected"
+    exit 1
+  fi
 }
 
 run_stow() {
