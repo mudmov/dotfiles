@@ -12,7 +12,6 @@ keymap('i', '<D-BS>', '<C-u>')
 -- Remap escape key
 keymap('i', 'jk', '<Esc>')
 keymap('i', 'JK', '<Esc>')
-keymap('t', 'jk', '<C-\\><C-n><cmd>hide<cr>')
 
 -- Center after half page jump
 keymap('n', '<C-d>', '<C-d>zz')
