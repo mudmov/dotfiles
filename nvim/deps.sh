@@ -10,14 +10,15 @@ _mgr="$(detect_pkg_manager)"
 DEPS=(git ripgrep make python3 node npm)
 
 # Add OS-specific package names
+# Note: stylua and prettier are handled by Mason inside Neovim, not system packages
 if [[ "$_mgr" == "brew" ]]; then
-  DEPS+=(neovim fd gcc stylua prettier)
+  DEPS+=(neovim fd gcc)
 elif [[ "$_mgr" == "apt" ]]; then
-  DEPS+=(neovim fd-find gcc python3-pip stylua prettier)
+  DEPS+=(neovim fd-find gcc python3-pip build-essential)
 elif [[ "$_mgr" == "dnf" ]]; then
-  DEPS+=(neovim fd-find gcc python3-pip stylua prettier)
+  DEPS+=(neovim fd-find gcc python3-pip)
 elif [[ "$_mgr" == "pacman" ]]; then
-  DEPS+=(neovim fd gcc python3-pip stylua prettier)
+  DEPS+=(neovim fd gcc python3-pip)
 fi
 
 setup() {
