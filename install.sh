@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Dotfiles bootstrap installer
-# Usage: ./install.sh [--uninstall|--restow] [package ...]
+# Usage: ./install.sh [--help|--check|--uninstall|--restow] [package ...]
 # No args: interactive menu
 
 set -euo pipefail
@@ -8,13 +8,15 @@ set -euo pipefail
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$DOTFILES_DIR/lib/common.sh"
 
-MODE="install"  # install | uninstall | restow
+MODE="install"  # install | uninstall | restow | check | help
 
 # Parse flags
 while [[ "${1:-}" == --* ]]; do
   case "$1" in
     --uninstall) MODE="uninstall"; shift ;;
     --restow)   MODE="restow"; shift ;;
+    --check)    MODE="check"; shift ;;
+    --help|-h)  MODE="help"; shift ;;
     *)           log_error "Unknown flag: $1"; exit 1 ;;
   esac
 done
@@ -184,7 +186,98 @@ print_summary() {
   echo ""
 }
 
+show_help() {
+  echo "Dotfiles Bootstrap Installer"
+  echo ""
+  echo "Usage: ./install.sh [flags] [package ...]"
+  echo ""
+  echo "Flags:"
+  echo "  --help, -h     Show this help message"
+  echo "  --check        Check which deps are installed vs missing"
+  echo "  --uninstall    Unstow selected packages"
+  echo "  --restow       Restow selected packages"
+  echo ""
+  echo "Examples:"
+  echo "  ./install.sh                 # Interactive menu"
+  echo "  ./install.sh tmux zsh        # Install specific packages"
+  echo "  ./install.sh --check         # Check all packages"
+  echo "  ./install.sh --check nvim    # Check nvim deps only"
+  echo "  ./install.sh --uninstall zsh # Unstow zsh"
+  echo ""
+  echo "Available packages:"
+  local pkg
+  while IFS= read -r pkg; do
+    local desc
+    desc="$(get_pkg_description "$pkg")"
+    printf "  %-15s %s\n" "$pkg" "$desc"
+  done < <(available_packages)
+}
+
+check_packages() {
+  local packages=("$@")
+  if [[ ${#packages[@]} -eq 0 ]]; then
+    mapfile -t packages < <(available_packages)
+  fi
+
+  local any_missing=0
+  for pkg in "${packages[@]}"; do
+    local deps_file="$DOTFILES_DIR/$pkg/deps.sh"
+    if [[ ! -d "$DOTFILES_DIR/$pkg" ]]; then
+      log_error "Package '$pkg' not found"
+      any_missing=1
+      continue
+    fi
+    if [[ ! -f "$deps_file" ]]; then
+      log_info "$pkg: no deps.sh"
+      continue
+    fi
+
+    # Source deps.sh to get DEPS array
+    (
+      source "$deps_file"
+      if ! declare -p DEPS &>/dev/null 2>&1; then
+        echo "  $pkg: no DEPS defined"
+        exit 0
+      fi
+      local missing=() installed=()
+      for dep in "${DEPS[@]}"; do
+        if command -v "$dep" &>/dev/null; then
+          installed+=("$dep")
+        else
+          missing+=("$dep")
+        fi
+      done
+      if [[ ${#missing[@]} -eq 0 ]]; then
+        printf "  ${GREEN}✔${NC}  %s — all deps installed (%s)\n" "$pkg" "${installed[*]}"
+      else
+        printf "  ${YELLOW}⚠${NC}  %s — missing: %s" "$pkg" "${missing[*]}"
+        if [[ ${#installed[@]} -gt 0 ]]; then
+          printf ", installed: %s" "${installed[*]}"
+        fi
+        printf "\n"
+        exit 1
+      fi
+    ) || any_missing=1
+    unset DEPS DESCRIPTION MACOS_ONLY 2>/dev/null || true
+    unset -f setup 2>/dev/null || true
+  done
+
+  return "$any_missing"
+}
+
 main() {
+  if [[ "$MODE" == "help" ]]; then
+    show_help
+    exit 0
+  fi
+
+  if [[ "$MODE" == "check" ]]; then
+    log_info "Checking dependencies ($(detect_os), $(detect_pkg_manager))"
+    echo ""
+    check_packages "$@"
+    exit $?
+  fi
+
   log_info "Dotfiles installer ($(detect_os), $(detect_pkg_manager))"
   ensure_stow
 
