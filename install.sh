@@ -113,32 +113,52 @@ process_package() {
     return
   fi
 
+  local dep_failures=()
+
   # Source deps.sh if it exists
   if [[ -f "$deps_file" ]]; then
     log_info "Sourcing $pkg/deps.sh..."
-    (
-      source "$deps_file"
-      # Install system dependencies
-      if declare -p DEPS &>/dev/null 2>&1; then
-        for dep in "${DEPS[@]}"; do
-          if ! command -v "$dep" &>/dev/null; then
-            log_info "Installing dependency: $dep"
-            install_pkg "$dep"
-          else
-            log_success "Dependency already installed: $dep"
+    source "$deps_file"
+
+    # Install system dependencies
+    if declare -p DEPS &>/dev/null 2>&1; then
+      for dep in "${DEPS[@]}"; do
+        if ! command -v "$dep" &>/dev/null; then
+          log_info "Installing dependency: $dep"
+          if ! install_pkg "$dep"; then
+            local mgr
+            mgr="$(detect_pkg_manager)"
+            log_error "Failed to install dep '$dep' via $mgr for package '$pkg'"
+            dep_failures+=("$dep")
           fi
-        done
+        else
+          log_success "Dependency already installed: $dep"
+        fi
+      done
+    fi
+
+    # Run setup function if defined (even if some deps failed)
+    if declare -f setup &>/dev/null; then
+      log_info "Running setup for $pkg..."
+      if ! setup; then
+        log_error "Setup failed for package '$pkg'"
+        dep_failures+=("setup()")
       fi
-      # Run setup function if defined
-      if declare -f setup &>/dev/null; then
-        log_info "Running setup for $pkg..."
-        setup
-      fi
-    )
+    fi
+
+    # Clean up sourced variables/functions to avoid leaking between packages
+    unset DEPS DESCRIPTION MACOS_ONLY 2>/dev/null || true
+    unset -f setup 2>/dev/null || true
   fi
 
+  # Stow even if deps failed
   run_stow "$pkg"
   log_success "Stowed $pkg"
+
+  if [[ ${#dep_failures[@]} -gt 0 ]]; then
+    log_warn "Package '$pkg' had failures: ${dep_failures[*]}"
+    return 1
+  fi
 }
 
 main() {
@@ -153,15 +173,23 @@ main() {
     select_packages
   fi
 
+  local any_failures=0
+
   for pkg in "${SELECTED[@]}"; do
     if [[ ! -d "$DOTFILES_DIR/$pkg" ]]; then
       log_warn "Package '$pkg' not found, skipping"
       continue
     fi
-    process_package "$pkg"
+    if ! process_package "$pkg"; then
+      any_failures=1
+    fi
   done
 
-  log_success "Done!"
+  if [[ "$any_failures" -eq 1 ]]; then
+    log_warn "Done with some failures (see above)"
+  else
+    log_success "Done!"
+  fi
 }
 
 main "$@"
